@@ -53,7 +53,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Dashboard sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
               <Route path="/dashboard" element={<Dashboard sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
               <Route path="/a" element={<Table/>} />
-              <Route path='/request-management'  element={<RequestManagement sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
+              <Route path='/request-management' element={<RequestManagement sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
               <Route path='/receive-items'  element={<ReceiveItems sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
               <Route path='/sterilization-process'  element={<SterilizationProcess sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />
               <Route path='/issue-item'  element={<IssueItem sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />} />

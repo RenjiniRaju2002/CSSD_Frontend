@@ -33,11 +33,11 @@ const ConsumptionReports: React.FC<ConsumptionReportsProps> = ({ sidebarCollapse
 
   // Fetch requests and kits for dropdowns
   useEffect(() => {
-    fetch('http://192.168.50.95:3001/cssd_requests')
+    fetch('http://localhost:3001/api/cssd_requests')
       .then(res => res.json())
       .then(data => setRequests(data))
       .catch(() => setRequests([]));
-    fetch('http://192.168.50.95:3001/createdKits')
+    fetch('http://localhost:3001/api/createdKits')
       .then(res => res.json())
       .then(data => setKits(data))
       .catch(() => setKits([]));
@@ -58,7 +58,7 @@ const ConsumptionReports: React.FC<ConsumptionReportsProps> = ({ sidebarCollapse
 
   // Fetch consumption records from database
   useEffect(() => {
-    fetch('http://192.168.50.95:3001/consumptionRecords')
+    fetch('http://localhost:3001/api/consumptionRecords')
       .then(res => res.json())
       .then(data => {
         setAllData(data);
@@ -446,10 +446,10 @@ const ConsumptionReports: React.FC<ConsumptionReportsProps> = ({ sidebarCollapse
               if (!form.used) { alert('Please enter the Consumed count'); return; }
               if (!form.items) { alert('Please enter the Items Used'); return; }
               const newRecord = { ...form, id: generatedId, before: Number(form.before), after: Number(form.after), used: Number(form.used) };
-              await fetch('http://192.168.50.95:3001/consumptionRecords', {
+              await fetch('http://localhost:3001/api/consumptionRecords', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newRecord)
               });
-              const res = await fetch('http://192.168.50.95:3001/consumptionRecords');
+              const res = await fetch('http://localhost:3001/api/consumptionRecords');
               const updated = await res.json();
               setAllData(updated); setTableData(updated); setFilteredData(updated);
               setForm({ id: '', type: '', dept: '', date: '', before: '', after: '', used: '', items: '', requestId: '', kitId: '' });

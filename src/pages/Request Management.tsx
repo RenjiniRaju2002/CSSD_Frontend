@@ -20,6 +20,7 @@ import DateInput from "../components/DateInput";
 import Breadcrumb from "../components/Breadcrumb";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 interface Request {
   id: string;
@@ -214,16 +215,31 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
   };
 
   // Fetch requests from database
+  // useEffect(() => {
+  //   fetch('http://localhost:3001/api/cssd_requests')
+  //     .then(res => res.json())
+  //     .then(data => setRequests(data))
+  //     .catch(() => setRequests([]));
+  // }, []);
+  const fetchRequests = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/cssd_requests')
+      const data = await response.json();
+      setRequests(data);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+      setRequests([]);
+    }
+  };
+
+  // Fetch created kits from database
   useEffect(() => {
-    fetch('http://192.168.50.95:3001/cssd_requests')
-      .then(res => res.json())
-      .then(data => setRequests(data))
-      .catch(() => setRequests([]));
+    fetchRequests();
   }, []);
 
   // Fetch created kits from database
   useEffect(() => {
-    fetch('http://192.168.50.95:3001/createdKits')
+    fetch('http://localhost:3001/api/createdKits')
       .then(res => res.json())
       .then(data => {
         // Sort kits by ID in descending order to show most recent first
@@ -366,10 +382,10 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
       };
       
       // POST to API for cssd_requests
-      await fetch('http://192.168.50.95:3001/cssd_requests', {
+      await fetch('http://localhost:3001/api/cssd_requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newRequest)
+        body: JSON.stringify(newRequest),
       });
 
       // Create corresponding entry in receive_items
@@ -390,7 +406,7 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
       };
 
       // POST to API for receive_items
-      await fetch('http://192.168.50.95:3001/receive_items', {
+      await fetch('http://localhost:3001/api/receive_items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newReceiveItem)
@@ -411,7 +427,7 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
       setShowCreateKit(false);
       
       // Refresh requests
-      const res = await fetch('http://192.168.50.95:3001/cssd_requests');
+      const res = await fetch('http://localhost:3001/api/cssd_requests');
       const updatedRequests = await res.json();
       setRequests(updatedRequests);
       
@@ -505,8 +521,8 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
       createdAt: new Date().toISOString()
     };
     
-    // POST to API for createdKits
-    await fetch('http://192.168.50.95:3001/createdKits', {
+          // POST to API for createdKits
+      await fetch('http://localhost:3001/api/createdKits', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newKit)
@@ -529,16 +545,16 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
       receivedTime: currentTime
     };
 
-    // POST to API for receive_items
-    await fetch('http://192.168.50.95:3001/receive_items', {
+          // POST to API for receive_items
+      await fetch('http://localhost:3001/api/receive_items', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newReceiveItem)
     });
     
     // Fetch updated kits
-    const res = await fetch('http://192.168.50.95:3001/createdKits');
-    const updated = await res.json();
+    const res = await axios.get('http://localhost:3001/api/createdKits');
+    const updated = await res.data;
     setCreatedKits(updated);
     // Reset form and close modal
     setShowCreateKit(false);
@@ -557,7 +573,7 @@ const  RequestManagement : React.FC< RequestManagementProps > = ({ sidebarCollap
     setRequests(updatedRequests);
 
     // POST to API
-    await fetch(`http://192.168.50.95:3001/cssd_requests/${id}`, {
+    await axios.put(`http://localhost:3001/api/cssd_requests/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })

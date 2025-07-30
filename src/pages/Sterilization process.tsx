@@ -80,7 +80,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
 
   // Fetch sterilization processes from database
   useEffect(() => {
-    fetch('http://192.168.50.95:3001/sterilizationProcesses')
+    fetch('http://localhost:3001/api/sterilizationProcesses')
       .then(res => res.json())
       .then(data => {
         // Sort processes in descending order by ID (assuming higher IDs are more recent)
@@ -94,7 +94,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
 
   useEffect(() => {
     // Fetch receive_items and only include those with status 'Approved'
-    fetch('http://192.168.50.95:3001/receive_items')
+    fetch('http://localhost:3001/api/receive_items')
       .then(res => res.json())
       .then(data => {
         const approvedRequests = data.filter((r: any) => r.status === 'Approved');
@@ -102,7 +102,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
       })
       .catch(() => setAvailableRequests([]));
     // Fetch consumption records for Surgery IDs
-    fetch('http://192.168.50.95:3001/consumptionRecords')
+    fetch('http://localhost:3001/api/consumptionRecords')
       .then(res => res.json())
       .then(data => setConsumptionRecords(data))
       .catch(() => setConsumptionRecords([]));
@@ -159,7 +159,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
     setProcesses(updatedProcesses);
 
     // Update in database
-    await fetch(`http://192.168.50.95:3001/sterilizationProcesses/${id}`, {
+    await fetch(`http://localhost:3001/api/sterilizationProcesses/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updateData)
@@ -176,7 +176,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
     if (newStatus === "Completed") {
       try {
         // Fetch the original request details
-        const requestResponse = await fetch(`http://192.168.50.95:3001/cssd_requests/${processToUpdate.itemId}`);
+        const requestResponse = await fetch(`http://localhost:3001/api/cssd_requests/${processToUpdate.itemId}`);
         if (requestResponse.ok) {
           const requestData = await requestResponse.json();
           
@@ -194,13 +194,13 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
           };
 
           // Check if item already exists in available items
-          const existingItemsResponse = await fetch('http://192.168.50.95:3001/availableItems');
+          const existingItemsResponse = await fetch('http://localhost:3001/api/availableItems');
           const existingItems = await existingItemsResponse.json();
           const existingItem = existingItems.find((item: any) => item.id === processToUpdate.itemId);
 
           if (!existingItem) {
             // Add to available items database
-            const addResponse = await fetch('http://192.168.50.95:3001/availableItems', {
+            const addResponse = await fetch('http://localhost:3001/api/availableItems', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(availableItem),
@@ -214,7 +214,7 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
           } else {
             console.log('Item already exists in available items:', processToUpdate.itemId);
             // Update the existing item with new sterilization info
-            const updateResponse = await fetch(`http://192.168.50.95:3001/availableItems/${processToUpdate.itemId}`, {
+            const updateResponse = await fetch(`http://localhost:3001/api/availableItems/${processToUpdate.itemId}`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -268,14 +268,14 @@ const SterilizationProcess: React.FC<SterilizationProcessProps> = ({ sidebarColl
     };
 
     // Save to database
-    await fetch('http://192.168.50.95:3001/sterilizationProcesses', {
+    await fetch('http://localhost:3001/api/sterilizationProcesses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newProcess)
     });
 
     // Fetch updated processes
-    const res = await fetch('http://192.168.50.95:3001/sterilizationProcesses');
+    const res = await fetch('http://localhost:3001/api/sterilizationProcesses');
     const updated = await res.json();
     setProcesses(updated);
 

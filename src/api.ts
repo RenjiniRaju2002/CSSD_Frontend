@@ -1,16 +1,15 @@
-// const BASE_URL = 'http://localhost:3001';
+// const BASE_URL = 'http://192.168.50.95:3001';
 const getBaseURL = (): string => {
   // Check if we're in development or production
   if (import.meta.env.DEV) {
-      // In development, use network IP for cross-system access
-      return 'http://192.168.50.95:3001';
-      // return 'http://localhost:4000';
+      // In development, use localhost to match backend
+      return 'http://localhost:3001/api';
   } else {
     // In production, use the actual server URL
     // You can set this via environment variable
-      return import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    }
-  };
+    return import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+  }
+};
   const BASE_URL=getBaseURL();
 
 export async function apiGet(endpoint: string) {

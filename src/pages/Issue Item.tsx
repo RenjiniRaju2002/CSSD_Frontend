@@ -54,7 +54,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
   // Fetch issued items from backend
   const fetchIssuedItems = async () => {
     try {
-      const response = await fetch('http://192.168.50.95:3001/issueItems');
+      const response = await fetch('http://localhost:3001/api/issueItems');
       if (response.ok) {
         const data = await response.json();
         setIssuedItems(data);
@@ -71,7 +71,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
   // Fetch request IDs from backend
   const fetchRequestIds = async () => {
     try {
-      const response = await fetch('http://192.168.50.95:3001/cssd_requests');
+      const response = await fetch('http://localhost:3001/api/cssd_requests');
       if (response.ok) {
         const requests = await response.json();
         setAllRequests(requests);
@@ -93,12 +93,12 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
   const saveAvailableItems = async (items: AvailableItem[]) => {
     try {
       // Clear existing available items
-      const existingItems = await fetch('http://192.168.50.95:3001/availableItems');
+      const existingItems = await fetch('http://localhost:3001/api/availableItems');
       const existingData = await existingItems.json();
       
       // Delete all existing items
       for (const item of existingData) {
-        await fetch(`http://192.168.50.95:3001/availableItems/${item.id}`, {
+        await fetch(`http://localhost:3001/api/availableItems/${item.id}`, {
           method: 'DELETE'
         });
       }
@@ -110,7 +110,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
       
       // Add new items
       for (const item of uniqueItems) {
-        await fetch('http://192.168.50.95:3001/availableItems', {
+        await fetch('http://localhost:3001/api/availableItems', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
   // Fetch available items from database
   const fetchAvailableItemsFromDB = async () => {
     try {
-      const response = await fetch('http://192.168.50.95:3001/availableItems');
+      const response = await fetch('http://localhost:3001/api/availableItems');
       if (response.ok) {
         const data = await response.json();
         setAvailableItems(data);
@@ -148,17 +148,17 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
       setError("");
       
       // Get current available items from database
-      const currentItemsResponse = await fetch('http://192.168.50.95:3001/availableItems');
+      const currentItemsResponse = await fetch('http://localhost:3001/api/availableItems');
       const currentItems = await currentItemsResponse.json();
       const currentItemIds = currentItems.map((item: any) => item.id);
       
       // Fetch completed sterilization processes
-      const sterilizationResponse = await fetch('http://192.168.50.95:3001/sterilizationProcesses');
+      const sterilizationResponse = await fetch('http://localhost:3001/api/sterilizationProcesses');
       const sterilizationData = await sterilizationResponse.json();
       const completedProcesses = sterilizationData.filter((p: any) => p.status === "Completed");
       
       // Fetch original requests to get item details
-      const requestsResponse = await fetch('http://192.168.50.95:3001/cssd_requests');
+      const requestsResponse = await fetch('http://localhost:3001/api/cssd_requests');
       const requestsData = await requestsResponse.json();
       
       console.log('Refreshed completed sterilization processes:', completedProcesses);
@@ -185,7 +185,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
             process: process.process,
           };
           
-          await fetch('http://192.168.50.95:3001/availableItems', {
+          await fetch('http://localhost:3001/api/availableItems', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newItem),
@@ -237,7 +237,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
     if (!itemToIssue) {
       try {
         // Fetch the request details from the database
-        const response = await fetch(`http://192.168.50.95:3001/cssd_requests/${selectedRequestId}`);
+        const response = await fetch(`http://localhost:3001/api/cssd_requests/${selectedRequestId}`);
         if (response.ok) {
           const requestData = await response.json();
           itemToIssue = {
@@ -278,7 +278,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
 
     try {
       // Save to backend
-      const response = await fetch('http://192.168.50.95:3001/issueItems', {
+      const response = await fetch('http://localhost:3001/api/issueItems', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -295,7 +295,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ sidebarCollapsed = false, toggleS
         
         // Remove the issued item from available items in database
         try {
-          await fetch(`http://192.168.50.95:3001/availableItems/${selectedRequestId}`, {
+          await fetch(`http://localhost:3001/api/availableItems/${selectedRequestId}`, {
             method: 'DELETE'
           });
         } catch (error) {
